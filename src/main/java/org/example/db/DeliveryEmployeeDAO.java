@@ -26,12 +26,10 @@ public class DeliveryEmployeeDAO {
             Connection c = databaseConnector.getConnection();
 
             // sql statement string for creating employee
-            String sqlEmployee = "INSERT INTO employee (first_name, last_name, salary, bank_account_number, national_insurance_number)\n" +
-                    "VALUES (?, ?, ?, ?, ?);";
+            String sqlEmployee = "INSERT INTO employee (first_name, last_name, salary, bank_account_number, national_insurance_number) VALUES (?, ?, ?, ?, ?);";
 
             // prepare sql statement
             PreparedStatement statementEmployee = c.prepareStatement(sqlEmployee, Statement.RETURN_GENERATED_KEYS);
-
 
             // set attributes of new employee
             statementEmployee.setString(1, deliveryEmployee.getFirst_name());
