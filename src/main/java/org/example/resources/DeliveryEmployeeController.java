@@ -20,7 +20,7 @@ public class DeliveryEmployeeController {
 
     // GET route to capture all employees in DB
     @GET
-    @Path("/deliveryemployee")
+    @Path("/employee/delivery")
     @Produces(MediaType.APPLICATION_JSON)
     public Response testDAO(){
         DeliveryEmployeeDAO employeeDAO = new DeliveryEmployeeDAO();
@@ -29,7 +29,7 @@ public class DeliveryEmployeeController {
 
     // POST route to create a new delivery employee in DB
     @POST
-    @Path("/deliveryemployee")
+    @Path("/employee/delivery")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createDeliveryEmployee(DeliveryEmployee deliveryEmployee) {
         try {
