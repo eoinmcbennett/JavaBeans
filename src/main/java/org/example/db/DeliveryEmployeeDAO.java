@@ -58,7 +58,7 @@ public class DeliveryEmployeeDAO {
             String sqlDeliveryEmployee = "INSERT INTO delivery_employee(employee_id) VALUES (?);";
 
             // prepare sql statement
-            PreparedStatement statementDeliveryEmployee = c.prepareStatement(sqlDeliveryEmployee, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statementDeliveryEmployee = c.prepareStatement(sqlDeliveryEmployee);
 
             // set id of delivery employee
             statementDeliveryEmployee.setInt(1, newId);

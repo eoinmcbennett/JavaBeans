@@ -3,6 +3,7 @@ package org.example.resources;
 import org.example.api.DeliveryEmployeeService;
 import org.example.cli.DeliveryEmployee;
 import org.example.client.FailedToCreateException;
+import org.example.client.ValidationFailedException;
 import org.example.db.DeliveryEmployeeDAO;
 
 import javax.ws.rs.GET;
@@ -37,6 +38,8 @@ public class DeliveryEmployeeController {
         } catch (FailedToCreateException e) {
             System.err.println(e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
+        } catch (ValidationFailedException e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
 }
