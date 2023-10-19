@@ -4,6 +4,7 @@ import org.example.api.DeliveryEmployeeService;
 import org.example.cli.DeliveryEmployee;
 import org.example.client.FailedToCreateException;
 import org.example.client.ValidationFailedException;
+import io.swagger.annotations.Api;
 import org.example.db.DeliveryEmployeeDAO;
 
 import javax.ws.rs.GET;
@@ -13,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@Api("Java beans Kainoos api")
 @Path("/api")
 public class DeliveryEmployeeController {
 
