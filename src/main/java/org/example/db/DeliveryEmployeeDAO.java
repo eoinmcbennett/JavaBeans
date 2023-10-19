@@ -1,14 +1,71 @@
 package org.example.db;
 
+import org.example.cli.DeliveryEmployee;
+import org.example.client.FailedToCreateException;
+
 import javax.swing.plaf.nimbus.State;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DeliveryEmployeeDAO {
+
+    // create instance of database connector class
+    DatabaseConnector databaseConnector = new DatabaseConnector();
+
+    /**
+     * inserts a new employee into employee table, then adds employee to delivery employee table via employee id
+     * @param deliveryEmployee
+     * @return
+     * @throws SQLException
+     */
+    public int createDeliveryEmployee(DeliveryEmployee deliveryEmployee) throws FailedToCreateException {
+
+        // establish connection with database
+        try {
+            Connection c = databaseConnector.getConnection();
+
+            // sql statement string for creating employee
+            String sqlEmployee = "INSERT INTO employee (first_name, last_name, salary, bank_account_number, national_insurance_number)\n" +
+                    "VALUES (?, ?, ?, ?, ?);";
+
+            // prepare sql statement
+            PreparedStatement statementEmployee = c.prepareStatement(sqlEmployee, Statement.RETURN_GENERATED_KEYS);
+
+            // execute sql statement
+            statementEmployee.executeUpdate();
+
+            // get id of new delivery employee
+            ResultSet resultSet = statementEmployee.getGeneratedKeys();
+
+            if (!resultSet.next()) {
+                return -1;
+            }
+
+            // sql statement for inserting employee into employee delivery table
+            String sqlDeliveryEmployee = "INSERT INTO delivery_employee\n" +
+                    "(employee_id) \n" +
+                    "VALUES (?);";
+
+            // prepare sql statement
+            PreparedStatement statementDeliveryEmployee = c.prepareStatement(sqlEmployee, Statement.RETURN_GENERATED_KEYS);
+
+            statementDeliveryEmployee.setInt(1, resultSet.getInt(1));
+
+            // execute sql statement
+            statementDeliveryEmployee.executeUpdate();
+
+            // if resultSet contains id of new employee, return it
+            return resultSet.getInt(1);
+
+        }catch(SQLException e ){
+            throw new FailedToCreateException(e.getMessage());
+        }
+
+    }
+
+
+
     public List<Integer> getDeliveryEmployeesIds() {
         try {
             Connection conn = DatabaseConnector.getConnection();
