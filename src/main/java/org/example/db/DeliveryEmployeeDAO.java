@@ -45,16 +45,14 @@ public class DeliveryEmployeeDAO {
             ResultSet resultSet = statementEmployee.getGeneratedKeys();
 
             if (!resultSet.next()) {
-                return -1;
+                throw new FailedToCreateException("Failed to create delivery employee " + deliveryEmployee);
             }
 
             // sql statement for inserting employee into employee delivery table
-            String sqlDeliveryEmployee = "INSERT INTO delivery_employee\n" +
-                    "(employee_id) \n" +
-                    "VALUES (?);";
+            String sqlDeliveryEmployee = "INSERT INTO delivery_employee(employee_id) VALUES (?);";
 
             // prepare sql statement
-            PreparedStatement statementDeliveryEmployee = c.prepareStatement(sqlEmployee, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statementDeliveryEmployee = c.prepareStatement(sqlDeliveryEmployee, Statement.RETURN_GENERATED_KEYS);
 
             // set id of delivery employee
             statementDeliveryEmployee.setInt(1, resultSet.getInt(1));
@@ -67,7 +65,6 @@ public class DeliveryEmployeeDAO {
 
         }catch(SQLException e ){
             throw new FailedToCreateException(e.getMessage() + deliveryEmployee.toString());
-
         }
 
     }

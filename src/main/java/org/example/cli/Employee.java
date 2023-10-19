@@ -1,7 +1,11 @@
 package org.example.cli;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Employee {
     // Variable declaration
+
     private int id;
     private String first_name;
     private String last_name;
@@ -10,7 +14,14 @@ public class Employee {
     private String ni_number;
 
     // Constructor to create new employee with all required details
-    public Employee(int id, String first_name, String last_name, double salary, String bank_account_number, String ni_number) {
+    @JsonCreator
+    public Employee(
+            @JsonProperty("id") int id,
+            @JsonProperty("first_name") String first_name,
+            @JsonProperty("last_name") String last_name,
+            @JsonProperty("salary") double salary,
+            @JsonProperty("bank_account_number") String bank_account_number,
+            @JsonProperty("ni_number") String ni_number) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
