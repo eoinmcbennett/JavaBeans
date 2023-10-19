@@ -22,7 +22,7 @@ public class DeliveryEmployeeController {
     @GET
     @Path("/employee/delivery")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response testDAO(){
+    public Response getAllEmployees(){
         DeliveryEmployeeDAO employeeDAO = new DeliveryEmployeeDAO();
         return Response.ok().entity(employeeDAO.getDeliveryEmployeesIds()).build();
     }
