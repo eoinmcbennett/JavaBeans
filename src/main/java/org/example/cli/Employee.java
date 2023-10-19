@@ -64,4 +64,8 @@ public class Employee {
     public void setNi_number(String ni_number) {
         this.ni_number = ni_number;
     }
+
+    public String toString(){
+        return "ID: " + this.id + "\n Name: " + this.first_name + " " + this.last_name + "\n";
+    }
 }
