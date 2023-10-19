@@ -32,6 +32,7 @@ public class DeliveryEmployeeDAO {
             // prepare sql statement
             PreparedStatement statementEmployee = c.prepareStatement(sqlEmployee, Statement.RETURN_GENERATED_KEYS);
 
+
             // set attributes of new employee
             statementEmployee.setString(1, deliveryEmployee.getFirst_name());
             statementEmployee.setString(2, deliveryEmployee.getLast_name());
@@ -67,7 +68,8 @@ public class DeliveryEmployeeDAO {
             return resultSet.getInt(1);
 
         }catch(SQLException e ){
-            throw new FailedToCreateException(e.getMessage());
+            throw new FailedToCreateException(e.getMessage() + deliveryEmployee.toString());
+
         }
 
     }
