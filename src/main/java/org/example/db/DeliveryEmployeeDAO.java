@@ -48,6 +48,12 @@ public class DeliveryEmployeeDAO {
                 throw new FailedToCreateException("Failed to create delivery employee " + deliveryEmployee);
             }
 
+            int newId = resultSet.getInt(1);
+
+            if(newId <= 0){
+                throw new FailedToCreateException("Failed to create delivery employee " + deliveryEmployee);
+            }
+
             // sql statement for inserting employee into employee delivery table
             String sqlDeliveryEmployee = "INSERT INTO delivery_employee(employee_id) VALUES (?);";
 
@@ -55,14 +61,12 @@ public class DeliveryEmployeeDAO {
             PreparedStatement statementDeliveryEmployee = c.prepareStatement(sqlDeliveryEmployee, Statement.RETURN_GENERATED_KEYS);
 
             // set id of delivery employee
-            statementDeliveryEmployee.setInt(1, resultSet.getInt(1));
+            statementDeliveryEmployee.setInt(1, newId);
 
             // execute sql statement
             statementDeliveryEmployee.executeUpdate();
 
-            // if resultSet contains id of new employee, return it
-            return resultSet.getInt(1);
-
+            return newId;
         }catch(SQLException e ){
             throw new FailedToCreateException(e.getMessage() + deliveryEmployee.toString());
         }

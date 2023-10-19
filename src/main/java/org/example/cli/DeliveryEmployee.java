@@ -17,4 +17,7 @@ public class DeliveryEmployee extends Employee {
         super(id, firstName, lastName, salary, bankAccountNumber, niNumber);
     }
 
+    public String toString(){
+        return super.toString();
+    }
 }
