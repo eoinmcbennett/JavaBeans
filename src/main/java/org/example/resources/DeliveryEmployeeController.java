@@ -5,6 +5,7 @@ import org.example.cli.DeliveryEmployee;
 import org.example.client.DoesNotExistException;
 import org.example.client.FailedToCreateException;
 import org.example.client.FailedToGetException;
+import org.example.client.FailedToDeleteException;
 import org.example.client.ValidationFailedException;
 import io.swagger.annotations.Api;
 import org.example.db.DeliveryEmployeeDAO;
@@ -67,4 +68,18 @@ public class DeliveryEmployeeController {
         }
     }
 
+
+    @DELETE
+    @Path("/employee/delivery/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteDeliveryEmployee(@PathParam("id") int id){
+        try {
+            deliveryEmployeeService.deleteDeliveryEmployee(id);
+            return Response.ok().build();
+        } catch (FailedToDeleteException e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        } catch(DoesNotExistException e){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
 }

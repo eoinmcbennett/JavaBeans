@@ -3,6 +3,7 @@ package org.example.api;
 import org.example.cli.DeliveryEmployee;
 import org.example.client.DoesNotExistException;
 import org.example.client.FailedToCreateException;
+import org.example.client.FailedToDeleteException;
 import org.example.client.FailedToGetException;
 import org.example.client.ValidationFailedException;
 import org.example.core.EmployeeValidator;
@@ -30,7 +31,22 @@ public class DeliveryEmployeeService {
         return dao.createDeliveryEmployee(deliveryEmployee);
     }
 
-    /**
+    /** Attempts to delete a delivery employee using the service data access object
+     * Attempts to delete a delivery employee using the service data access object
+     * @param id the id of the delivery employee to delete
+     * @throws FailedToDeleteException Thrown if the deletion failed from the data access object
+     */
+    public void deleteDeliveryEmployee(int id) throws FailedToDeleteException, DoesNotExistException {
+        try {
+            if(dao.getDeliveryEmployeeById(id) == null){
+                throw new DoesNotExistException();
+            }
+            dao.deleteDeliveryEmployee(id);
+        } catch(FailedToGetException e){
+            throw new FailedToDeleteException(e.getMessage());
+        }
+    }
+
      * returns specific delivery employee based on employee id
      * @param id employee id
      * @return delivery employee

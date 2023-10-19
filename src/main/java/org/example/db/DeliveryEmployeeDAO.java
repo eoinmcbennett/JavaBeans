@@ -3,8 +3,8 @@ package org.example.db;
 import org.example.cli.DeliveryEmployee;
 import org.example.client.FailedToCreateException;
 import org.example.client.FailedToGetException;
+import org.example.client.FailedToDeleteException;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +124,7 @@ public class DeliveryEmployeeDAO {
             ResultSet resultSet = statementEmployee.executeQuery();
 
             // return order with returned data
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 return new DeliveryEmployee(
                         resultSet.getInt("employee_id"),
                         resultSet.getString("first_name"),
@@ -140,6 +140,25 @@ public class DeliveryEmployeeDAO {
         } catch (SQLException e) {
             throw new FailedToGetException(e.getMessage());
         }
+    }
 
+    /** Attempts to delete a delivery employee from the database
+     * Attempts to delete a delivery employee from the database
+     * @param id the id of the delivery employee to delete
+     * @throws FailedToDeleteException Thrown if the database returns an error during the deletion.
+     */
+    public void deleteDeliveryEmployee(int id) throws FailedToDeleteException {
+        try {
+            Connection conn = DatabaseConnector.getConnection();
+            String SQL = "DELETE FROM employee WHERE employee_id = ?";
+            PreparedStatement st = conn.prepareStatement(SQL);
+
+            st.setInt(1,id);
+
+            st.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new FailedToDeleteException(e.getMessage());
+        }
     }
 }
