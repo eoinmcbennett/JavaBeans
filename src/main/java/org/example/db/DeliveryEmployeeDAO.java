@@ -16,7 +16,7 @@ public class DeliveryEmployeeDAO {
     /**
      * inserts a new employee into employee table, then adds employee to delivery employee table via employee id
      * @param deliveryEmployee
-     * @return
+     * @return id of created employee in database
      * @throws SQLException
      */
     public int createDeliveryEmployee(DeliveryEmployee deliveryEmployee) throws FailedToCreateException {
@@ -70,7 +70,10 @@ public class DeliveryEmployeeDAO {
     }
 
 
-
+    /**
+     * Gets a list of all delivery employee ids in the database
+     * @return List of all delivery employees ids
+     */
     public List<Integer> getDeliveryEmployeesIds() {
         try {
             Connection conn = DatabaseConnector.getConnection();
