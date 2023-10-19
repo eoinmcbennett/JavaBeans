@@ -9,12 +9,12 @@ public class DeliveryEmployee extends Employee {
     // Constructor for delivery employee, inherits all attributes from parent Employee class
     @JsonCreator
     public DeliveryEmployee( @JsonProperty("id") int id,
-                             @JsonProperty("first_name") String first_name,
-                             @JsonProperty("last_name") String last_name,
+                             @JsonProperty("firstName") String firstName,
+                             @JsonProperty("lastName") String lastName,
                              @JsonProperty("salary") double salary,
-                             @JsonProperty("bank_account_number") String bank_account_number,
-                             @JsonProperty("ni_number") String ni_number) {
-        super(id, first_name, last_name, salary, bank_account_number, ni_number);
+                             @JsonProperty("bankAccountNumber") String bankAccountNumber,
+                             @JsonProperty("niNumber") String niNumber) {
+        super(id, firstName, lastName, salary, bankAccountNumber, niNumber);
     }
 
 }

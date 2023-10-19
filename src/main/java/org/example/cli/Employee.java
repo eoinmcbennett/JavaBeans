@@ -5,29 +5,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Employee {
     // Variable declaration
-
     private int id;
-    private String first_name;
-    private String last_name;
+    private String firstName;
+    private String lastName;
     private double salary;
-    private String bank_account_number;
-    private String ni_number;
+    private String bankAccountNumber;
+    private String niNumber;
 
     // Constructor to create new employee with all required details
     @JsonCreator
     public Employee(
             @JsonProperty("id") int id,
-            @JsonProperty("first_name") String first_name,
-            @JsonProperty("last_name") String last_name,
+            @JsonProperty("firstName") String firstName,
+            @JsonProperty("lastName") String lastName,
             @JsonProperty("salary") double salary,
-            @JsonProperty("bank_account_number") String bank_account_number,
-            @JsonProperty("ni_number") String ni_number) {
+            @JsonProperty("bankAccountNumber") String bankAccountNumber,
+            @JsonProperty("niNumber") String niNumber) {
         this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.salary = salary;
-        this.bank_account_number = bank_account_number;
-        this.ni_number = ni_number;
+        this.bankAccountNumber = bankAccountNumber;
+        this.niNumber = niNumber;
     }
 
     // Getters and setters for all variables
@@ -39,20 +38,20 @@ public class Employee {
         this.id = id;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLast_name() {
-        return last_name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public double getSalary() {
@@ -63,24 +62,24 @@ public class Employee {
         this.salary = salary;
     }
 
-    public String getBank_account_number() {
-        return bank_account_number;
+    public String getBankAccountNumber() {
+        return bankAccountNumber;
     }
 
-    public void setBank_account_number(String bank_account_number) {
-        this.bank_account_number = bank_account_number;
+    public void setBankAccountNumber(String bankAccountNumber) {
+        this.bankAccountNumber = bankAccountNumber;
     }
 
-    public String getNi_number() {
-        return ni_number;
+    public String getNiNumber() {
+        return niNumber;
     }
 
-    public void setNi_number(String ni_number) {
-        this.ni_number = ni_number;
+    public void setNiNumber(String niNumber) {
+        this.niNumber = niNumber;
     }
 
     // Will create string for Employee object, excludes private details (e.g. NI number and bank details)
     public String toString(){
-        return "ID: " + this.id + "\n Name: " + this.first_name + " " + this.last_name + "\n";
+        return "ID: " + this.id + "\n Name: " + this.firstName + " " + this.lastName + "\n";
     }
 }
