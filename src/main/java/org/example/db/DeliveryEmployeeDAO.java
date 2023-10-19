@@ -32,11 +32,11 @@ public class DeliveryEmployeeDAO {
             PreparedStatement statementEmployee = c.prepareStatement(sqlEmployee, Statement.RETURN_GENERATED_KEYS);
 
             // set attributes of new employee
-            statementEmployee.setString(1, deliveryEmployee.getFirst_name());
-            statementEmployee.setString(2, deliveryEmployee.getLast_name());
+            statementEmployee.setString(1, deliveryEmployee.getFirstName());
+            statementEmployee.setString(2, deliveryEmployee.getLastName());
             statementEmployee.setDouble(3, deliveryEmployee.getSalary());
-            statementEmployee.setString(4, deliveryEmployee.getBank_account_number());
-            statementEmployee.setString(5, deliveryEmployee.getNi_number());
+            statementEmployee.setString(4, deliveryEmployee.getBankAccountNumber());
+            statementEmployee.setString(5, deliveryEmployee.getNiNumber());
 
             // execute sql statement
             statementEmployee.executeUpdate();
