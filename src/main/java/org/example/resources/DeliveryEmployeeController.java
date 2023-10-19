@@ -15,8 +15,10 @@ import javax.ws.rs.core.Response;
 @Path("/api")
 public class DeliveryEmployeeController {
 
-    DeliveryEmployeeService deliveryEmployeeService = new DeliveryEmployeeService();
+    // Instantiates DeliveryEmployee service, passes through DeliveryEmployee DAO
+    DeliveryEmployeeService deliveryEmployeeService = new DeliveryEmployeeService(new DeliveryEmployeeDAO());
 
+    // GET route to capture all employees in DB
     @GET
     @Path("/deliveryemployee")
     @Produces(MediaType.APPLICATION_JSON)
@@ -25,6 +27,7 @@ public class DeliveryEmployeeController {
         return Response.ok().entity(employeeDAO.getDeliveryEmployeesIds()).build();
     }
 
+    // POST route to create a new delivery employee in DB
     @POST
     @Path("/deliveryemployee")
     @Produces(MediaType.APPLICATION_JSON)

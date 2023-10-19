@@ -1,6 +1,7 @@
 package org.example.cli;
 
 public class Employee {
+    // Variable declaration
     private int id;
     private String first_name;
     private String last_name;
@@ -8,6 +9,7 @@ public class Employee {
     private String bank_account_number;
     private String ni_number;
 
+    // Constructor to create new employee with all required details
     public Employee(int id, String first_name, String last_name, double salary, String bank_account_number, String ni_number) {
         this.id = id;
         this.first_name = first_name;
@@ -17,6 +19,7 @@ public class Employee {
         this.ni_number = ni_number;
     }
 
+    // Getters and setters for all variables
     public int getId() {
         return id;
     }
@@ -65,6 +68,7 @@ public class Employee {
         this.ni_number = ni_number;
     }
 
+    // Will create string for Employee object, excludes private details (e.g. NI number and bank details)
     public String toString(){
         return "ID: " + this.id + "\n Name: " + this.first_name + " " + this.last_name + "\n";
     }
