@@ -16,8 +16,4 @@ public class DeliveryEmployee extends Employee {
                              @JsonProperty("niNumber") String niNumber) {
         super(id, firstName, lastName, salary, bankAccountNumber, niNumber);
     }
-
-    public String toString(){
-        return super.toString();
-    }
 }
