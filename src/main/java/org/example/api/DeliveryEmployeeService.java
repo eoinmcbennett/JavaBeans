@@ -78,7 +78,7 @@ public class DeliveryEmployeeService {
 
         // if employee exists, check data is valid using employee validator
         if(validateDeliveryEmployee != null){
-            throw new InvalidUpdateRequestException(updateDeliveryEmployeeValidator.isValidEmployeeUpdate(deliveryEmployeeUpdate));
+            throw new InvalidUpdateRequestException(validateDeliveryEmployee);
         }
 
         // call to dao to check employee with given id is a delivery employee
