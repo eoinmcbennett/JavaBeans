@@ -5,11 +5,20 @@ import org.example.cli.UpdateDeliveryEmployeeRequest;
 import org.example.client.*;
 import org.example.core.EmployeeValidator;
 import org.example.core.UpdateDeliveryEmployeeValidator;
+import org.example.cli.DeliveryEmployeeRequest;
+import org.example.client.DoesNotExistException;
+import org.example.client.FailedToCreateException;
+import org.example.client.FailedToGetException;
+import org.example.client.ValidationFailedException;
+import org.example.core.EmployeeValidator;
+import org.example.core.EmployeeRequestValidator;
 import org.example.db.DeliveryEmployeeDAO;
 
 public class DeliveryEmployeeService {
     private DeliveryEmployeeDAO dao;
     private EmployeeValidator employeeValidator = new EmployeeValidator();
+    EmployeeRequestValidator employeeRequestValidator = new EmployeeRequestValidator();
+
 
     public DeliveryEmployeeService(DeliveryEmployeeDAO dao){
         this.dao = dao;
@@ -17,16 +26,16 @@ public class DeliveryEmployeeService {
 
     /**
      * Attempts to create a delivery employee using the service data access object
-     * @param deliveryEmployee
+     * @param deliveryEmployeeRequest
      * @return the created delivery employee id
      * @throws FailedToCreateException
      */
-    public int createDeliveryEmployee(DeliveryEmployee deliveryEmployee) throws FailedToCreateException, ValidationFailedException {
-        String error = employeeValidator.isValidEmployee(deliveryEmployee);
+    public int createDeliveryEmployee(DeliveryEmployeeRequest deliveryEmployeeRequest) throws FailedToCreateException, ValidationFailedException {
+        String error = employeeRequestValidator.isValidEmployee(deliveryEmployeeRequest);
         if(error != null){
             throw new ValidationFailedException(error);
         }
-        return dao.createDeliveryEmployee(deliveryEmployee);
+        return dao.createDeliveryEmployee(deliveryEmployeeRequest);
     }
 
     /**
