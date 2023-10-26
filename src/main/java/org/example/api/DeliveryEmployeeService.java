@@ -1,11 +1,10 @@
 package org.example.api;
 
 import org.example.cli.DeliveryEmployee;
-import org.example.client.DoesNotExistException;
-import org.example.client.FailedToCreateException;
-import org.example.client.FailedToGetException;
-import org.example.client.ValidationFailedException;
+import org.example.cli.UpdateDeliveryEmployeeRequest;
+import org.example.client.*;
 import org.example.core.EmployeeValidator;
+import org.example.core.UpdateDeliveryEmployeeValidator;
 import org.example.db.DeliveryEmployeeDAO;
 
 public class DeliveryEmployeeService {
@@ -37,7 +36,12 @@ public class DeliveryEmployeeService {
      * @throws DoesNotExistException if no employee returned from database
      * @throws FailedToGetException if sql statement failed
      */
-    public DeliveryEmployee getDeliveryEmployeeById(int id) throws DoesNotExistException, FailedToGetException {
+    public DeliveryEmployee getDeliveryEmployeeById(int id) throws DoesNotExistException, FailedToGetException, DeliveryEmployeeDoesNotExistException {
+
+        // call to dao to check employee with given id is a delivery employee
+        if(dao.checkEmployeeIsDeliveryEmployee(id) == null){
+            throw new DeliveryEmployeeDoesNotExistException();
+        }
 
         // call getDeliveryEmployeeById method from DeliveryEmployeeDao class
         DeliveryEmployee deliveryEmployee = dao.getDeliveryEmployeeById(id);
@@ -48,5 +52,22 @@ public class DeliveryEmployeeService {
         }
 
         return deliveryEmployee;
+    }
+
+    public void updateDeliveryEmployee(int id, UpdateDeliveryEmployeeRequest deliveryEmployeeUpdate) throws FailedToUpdateDeliveryEmployee, FailedToGetException, DeliveryEmployeeDoesNotExistException, InvalidUpdateRequestException {
+
+        // call to dao to check employee with given id is a delivery employee
+        if(dao.checkEmployeeIsDeliveryEmployee(id) == null){
+            throw new DeliveryEmployeeDoesNotExistException();
+        }
+
+        // if employee exists, check data is valid using employee validator
+        UpdateDeliveryEmployeeValidator updateDeliveryEmployeeValidator = new UpdateDeliveryEmployeeValidator();
+        if(updateDeliveryEmployeeValidator.isValidEmployeeUpdate(deliveryEmployeeUpdate) != null){
+            throw new InvalidUpdateRequestException(updateDeliveryEmployeeValidator.isValidEmployeeUpdate(deliveryEmployeeUpdate));
+        }
+
+        // call on dao to update delivery employee
+        dao.updateDeliveryEmployee(id, deliveryEmployeeUpdate);
     }
 }

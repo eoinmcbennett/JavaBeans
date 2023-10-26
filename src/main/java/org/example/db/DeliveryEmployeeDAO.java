@@ -1,8 +1,10 @@
 package org.example.db;
 
 import org.example.cli.DeliveryEmployee;
+import org.example.cli.UpdateDeliveryEmployeeRequest;
 import org.example.client.FailedToCreateException;
 import org.example.client.FailedToGetException;
+import org.example.client.FailedToUpdateDeliveryEmployee;
 
 import javax.swing.plaf.nimbus.State;
 import java.sql.*;
@@ -135,6 +137,77 @@ public class DeliveryEmployeeDAO {
                 );
             }
             // return null if resultSet is empty
+            return null;
+
+        } catch (SQLException e) {
+            throw new FailedToGetException(e.getMessage());
+        }
+
+    }
+
+    /**
+     * updates delivery employee in employee table (service class checks employee with given id is delivery employee)
+     * @param id - employee id
+     * @param deliveryEmployeeUpdate contains attributes user can update
+     * @throws FailedToUpdateDeliveryEmployee if sql error thrown
+     */
+    public void updateDeliveryEmployee(int id, UpdateDeliveryEmployeeRequest deliveryEmployeeUpdate) throws FailedToUpdateDeliveryEmployee {
+
+        try(Connection c = databaseConnector.getConnection()){
+
+            // sql string
+            String sqlString = "UPDATE employee SET\n" +
+                    "first_name = ?, last_name = ?, salary = ?, bank_account_number = ? \n" +
+                    "WHERE employee_id = ?;";
+
+            // prepare sql statement
+            PreparedStatement preparedStatement = c.prepareStatement(sqlString);
+
+            // set placeholders
+            preparedStatement.setString(1, deliveryEmployeeUpdate.getFirstName());
+            preparedStatement.setString(2, deliveryEmployeeUpdate.getLastName());
+            preparedStatement.setDouble(3, deliveryEmployeeUpdate.getSalary());
+            preparedStatement.setString(4, deliveryEmployeeUpdate.getBankAccountNumber());
+            preparedStatement.setInt(5, id);
+
+            // execute update
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new FailedToUpdateDeliveryEmployee();
+        }
+    }
+
+    /**
+     * called in validator methods to check employee in question is a
+     * delivery employee by calling to the delivery employee table in db
+     * @param employeeID id of employee we want to check is a delivery employee
+     * @return String if employee is a delivery employee, null if they are not
+     * @throws FailedToGetException if sql error thrown
+     */
+    public String checkEmployeeIsDeliveryEmployee(int employeeID) throws FailedToGetException {
+
+        try(Connection c = databaseConnector.getConnection()){
+
+            // query string
+            String sqlString = "SELECT employee_id FROM delivery_employee\n" +
+                    "WHERE employee_id = ?;";
+
+            // prepare sql statement
+            PreparedStatement preparedStatement = c.prepareStatement(sqlString);
+
+            // set placeholder
+            preparedStatement.setInt(1, employeeID);
+
+            // execute statement
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // if result set is non-empty, return employee id
+            if(resultSet.next()){
+                return "exists";
+            }
+
+            // otherwise, return null since employee is not delivery employee
             return null;
 
         } catch (SQLException e) {

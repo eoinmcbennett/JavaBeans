@@ -2,10 +2,8 @@ package org.example.resources;
 
 import org.example.api.DeliveryEmployeeService;
 import org.example.cli.DeliveryEmployee;
-import org.example.client.DoesNotExistException;
-import org.example.client.FailedToCreateException;
-import org.example.client.FailedToGetException;
-import org.example.client.ValidationFailedException;
+import org.example.cli.UpdateDeliveryEmployeeRequest;
+import org.example.client.*;
 import io.swagger.annotations.Api;
 import org.example.db.DeliveryEmployeeDAO;
 
@@ -56,14 +54,30 @@ public class DeliveryEmployeeController {
         try {
             // response 200 ok, return delivery employee id
             return Response.ok(deliveryEmployeeService.getDeliveryEmployeeById(id)).build();
-        } catch (DoesNotExistException e) {
-            System.err.println(e.getMessage());
+        } catch (DoesNotExistException | DeliveryEmployeeDoesNotExistException e) {
             // response 400 bad request, delivery employee requested doesn't exist
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (FailedToGetException e) {
             System.err.println(e.getMessage());
             // response 500 internal server error, sql query failure
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PUT
+    @Path("/employee/updatedelivery/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateDeliveryEmployee(@PathParam("id") int id, UpdateDeliveryEmployeeRequest deliveryEmployeeUpdate){
+        try {
+            // call on service class to update delivery employee
+            deliveryEmployeeService.updateDeliveryEmployee(id, deliveryEmployeeUpdate);
+            return Response.status(Response.Status.OK).entity("delivery employee updated.").build();
+        } catch (FailedToUpdateDeliveryEmployee | FailedToGetException e) {
+            // response status 500 if sql error thrown with appropriate message
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        } catch (DeliveryEmployeeDoesNotExistException | InvalidUpdateRequestException e) {
+            // response status 400 if invalid data entered or delivery employee requested doesnt exist
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
 
