@@ -1,8 +1,11 @@
 package org.example.db;
 
 import org.example.cli.DeliveryEmployee;
+import org.example.cli.UpdateDeliveryEmployeeRequest;
+import org.example.cli.DeliveryEmployeeRequest;
 import org.example.client.FailedToCreateException;
 import org.example.client.FailedToGetException;
+import org.example.client.FailedToUpdateDeliveryEmployee;
 
 import javax.swing.plaf.nimbus.State;
 import java.sql.*;
@@ -16,11 +19,11 @@ public class DeliveryEmployeeDAO {
 
     /**
      * inserts a new employee into employee table, then adds employee to delivery employee table via employee id
-     * @param deliveryEmployee
+     * @param deliveryEmployeeRequest
      * @return id of created employee in database
      * @throws SQLException
      */
-    public int createDeliveryEmployee(DeliveryEmployee deliveryEmployee) throws FailedToCreateException {
+    public int createDeliveryEmployee(DeliveryEmployeeRequest deliveryEmployeeRequest) throws FailedToCreateException {
 
         // establish connection with database
         try {
@@ -33,11 +36,11 @@ public class DeliveryEmployeeDAO {
             PreparedStatement statementEmployee = c.prepareStatement(sqlEmployee, Statement.RETURN_GENERATED_KEYS);
 
             // set attributes of new employee
-            statementEmployee.setString(1, deliveryEmployee.getFirstName());
-            statementEmployee.setString(2, deliveryEmployee.getLastName());
-            statementEmployee.setDouble(3, deliveryEmployee.getSalary());
-            statementEmployee.setString(4, deliveryEmployee.getBankAccountNumber());
-            statementEmployee.setString(5, deliveryEmployee.getNiNumber());
+            statementEmployee.setString(1, deliveryEmployeeRequest.getFirstName());
+            statementEmployee.setString(2, deliveryEmployeeRequest.getLastName());
+            statementEmployee.setDouble(3, deliveryEmployeeRequest.getSalary());
+            statementEmployee.setString(4, deliveryEmployeeRequest.getBankAccountNumber());
+            statementEmployee.setString(5, deliveryEmployeeRequest.getNiNumber());
 
             // execute sql statement
             statementEmployee.executeUpdate();
@@ -46,13 +49,13 @@ public class DeliveryEmployeeDAO {
             ResultSet resultSet = statementEmployee.getGeneratedKeys();
 
             if (!resultSet.next()) {
-                throw new FailedToCreateException("Failed to create delivery employee " + deliveryEmployee);
+                throw new FailedToCreateException("Failed to create delivery employee " + deliveryEmployeeRequest);
             }
 
             int newId = resultSet.getInt(1);
 
             if(newId <= 0){
-                throw new FailedToCreateException("Failed to create delivery employee " + deliveryEmployee);
+                throw new FailedToCreateException("Failed to create delivery employee " + deliveryEmployeeRequest);
             }
 
             // sql statement for inserting employee into employee delivery table
@@ -69,7 +72,7 @@ public class DeliveryEmployeeDAO {
 
             return newId;
         }catch(SQLException e ){
-            throw new FailedToCreateException(e.getMessage() + deliveryEmployee.toString());
+            throw new FailedToCreateException(e.getMessage() + deliveryEmployeeRequest.toString());
         }
 
     }
@@ -79,22 +82,31 @@ public class DeliveryEmployeeDAO {
      * Gets a list of all delivery employee ids in the database
      * @return List of all delivery employees ids
      */
-    public List<Integer> getDeliveryEmployeesIds() {
+    public List<DeliveryEmployee> getDeliveryEmployees() {
         try {
             Connection conn = DatabaseConnector.getConnection();
-            String SQL = "SELECT employee_id, first_name, last_name, salary, bank_account_number, national_insurance_number FROM employee JOIN delivery_employee USING(employee_id)";
+            String SQL = "SELECT employee_id, first_name, last_name, salary, bank_account_number, " +
+                    "national_insurance_number FROM employee JOIN delivery_employee USING(employee_id)";
 
             Statement st = conn.createStatement();
 
             ResultSet rs = st.executeQuery(SQL);
 
-            List<Integer> employeeIds = new ArrayList<>();
+            List<DeliveryEmployee> deliveryEmployees = new ArrayList<>();
             while(rs.next()){
                 System.out.println(rs.getInt("employee_id"));
-                employeeIds.add(rs.getInt("employee_id"));
+                DeliveryEmployee deliveryEmployee = new DeliveryEmployee(
+                        rs.getInt("employee_id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getDouble("salary"),
+                        rs.getString("bank_account_number"),
+                        rs.getString("national_insurance_number"));
+
+                deliveryEmployees.add(deliveryEmployee);
             }
 
-            return employeeIds;
+            return deliveryEmployees;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -112,7 +124,11 @@ public class DeliveryEmployeeDAO {
             Connection c = databaseConnector.getConnection();
 
             // string sql statement
-            String sqlString = "SELECT employee_id, first_name, last_name, salary, bank_account_number, national_insurance_number FROM employee WHERE employee_id = ?";
+            String sqlString = "SELECT delivery_employee.employee_id, first_name, last_name, salary, bank_account_number, national_insurance_number \n" +
+                    "FROM delivery_employee\n" +
+                    "LEFT JOIN employee \n" +
+                    "ON delivery_employee.employee_id = employee.employee_id\n" +
+                    "WHERE delivery_employee.employee_id = ?;";
 
             // prepare sql statement
             PreparedStatement statementEmployee = c.prepareStatement(sqlString);
@@ -142,4 +158,40 @@ public class DeliveryEmployeeDAO {
         }
 
     }
-}
+
+    /**
+     * updates delivery employee in employee table (service class checks employee with given id is delivery employee)
+     * @param id - employee id
+     * @param deliveryEmployeeUpdate contains attributes user can update
+     * @throws FailedToUpdateDeliveryEmployee if sql error thrown
+     */
+    public void updateDeliveryEmployee(int id, UpdateDeliveryEmployeeRequest deliveryEmployeeUpdate) throws FailedToUpdateDeliveryEmployee {
+
+        try(Connection c = databaseConnector.getConnection()){
+
+            // sql string
+            String sqlString = "UPDATE employee SET\n" +
+                    "first_name = ?, last_name = ?, salary = ?, bank_account_number = ? \n" +
+                    "WHERE employee_id = ?;";
+
+            // prepare sql statement
+            PreparedStatement preparedStatement = c.prepareStatement(sqlString);
+
+            // set placeholders
+            preparedStatement.setString(1, deliveryEmployeeUpdate.getFirstName());
+            preparedStatement.setString(2, deliveryEmployeeUpdate.getLastName());
+            preparedStatement.setDouble(3, deliveryEmployeeUpdate.getSalary());
+            preparedStatement.setString(4, deliveryEmployeeUpdate.getBankAccountNumber());
+            preparedStatement.setInt(5, id);
+
+            // execute update
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new FailedToUpdateDeliveryEmployee();
+        }
+    }
+
+
+    }
+
