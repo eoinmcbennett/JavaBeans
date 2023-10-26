@@ -59,13 +59,13 @@ public class DeliveryEmployeeController {
         try {
             // response 200 ok, return delivery employee id
             return Response.ok(deliveryEmployeeService.getDeliveryEmployeeById(id)).build();
-        } catch (DoesNotExistException | DeliveryEmployeeDoesNotExistException e) {
-            // response 400 bad request, delivery employee requested doesn't exist
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (FailedToGetException e) {
             System.err.println(e.getMessage());
             // response 500 internal server error, sql query failure
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        } catch (DeliveryEmployeeDoesNotExistException e) {
+            // delivery employee not found in delivery employee table
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
     }
 
@@ -80,9 +80,12 @@ public class DeliveryEmployeeController {
         } catch (FailedToUpdateDeliveryEmployee | FailedToGetException e) {
             // response status 500 if sql error thrown with appropriate message
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        } catch (DeliveryEmployeeDoesNotExistException | InvalidUpdateRequestException e) {
+        } catch (InvalidUpdateRequestException e) {
             // response status 400 if invalid data entered or delivery employee requested doesnt exist
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (DeliveryEmployeeDoesNotExistException e) {
+            // delivery employee not found in delivery employee table
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
     }
 

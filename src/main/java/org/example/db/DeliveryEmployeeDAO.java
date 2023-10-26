@@ -124,7 +124,11 @@ public class DeliveryEmployeeDAO {
             Connection c = databaseConnector.getConnection();
 
             // string sql statement
-            String sqlString = "SELECT employee_id, first_name, last_name, salary, bank_account_number, national_insurance_number FROM employee WHERE employee_id = ?";
+            String sqlString = "SELECT delivery_employee.employee_id, first_name, last_name, salary, bank_account_number, national_insurance_number \n" +
+                    "FROM delivery_employee\n" +
+                    "LEFT JOIN employee \n" +
+                    "ON delivery_employee.employee_id = employee.employee_id\n" +
+                    "WHERE delivery_employee.employee_id = ?;";
 
             // prepare sql statement
             PreparedStatement statementEmployee = c.prepareStatement(sqlString);
@@ -188,41 +192,6 @@ public class DeliveryEmployeeDAO {
         }
     }
 
-    /**
-     * called in validator methods to check employee in question is a
-     * delivery employee by calling to the delivery employee table in db
-     * @param employeeID id of employee we want to check is a delivery employee
-     * @return String if employee is a delivery employee, null if they are not
-     * @throws FailedToGetException if sql error thrown
-     */
-    public String checkEmployeeIsDeliveryEmployee(int employeeID) throws FailedToGetException {
-
-        try(Connection c = databaseConnector.getConnection()){
-
-            // query string
-            String sqlString = "SELECT employee_id FROM delivery_employee\n" +
-                    "WHERE employee_id = ?;";
-
-            // prepare sql statement
-            PreparedStatement preparedStatement = c.prepareStatement(sqlString);
-
-            // set placeholder
-            preparedStatement.setInt(1, employeeID);
-
-            // execute statement
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            // if result set is non-empty, return employee id
-            if(resultSet.next()){
-                return "exists";
-            }
-
-            // otherwise, return null since employee is not delivery employee
-            return null;
-
-        } catch (SQLException e) {
-            throw new FailedToGetException(e.getMessage());
-        }
 
     }
-}
+
