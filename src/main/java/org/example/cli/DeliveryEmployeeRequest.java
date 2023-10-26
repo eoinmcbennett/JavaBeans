@@ -16,7 +16,4 @@ public class DeliveryEmployeeRequest extends EmployeeRequest {
         super(firstName, lastName, salary, bankAccountNumber, niNumber);
     }
 
-    public String toString(){
-        return super.toString();
-    }
 }

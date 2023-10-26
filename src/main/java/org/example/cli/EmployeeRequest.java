@@ -1,5 +1,8 @@
 package org.example.cli;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class EmployeeRequest {
 
     private String firstName;
@@ -8,7 +11,10 @@ public class EmployeeRequest {
     private String bankAccountNumber;
     private String niNumber;
 
-    public EmployeeRequest(String firstName, String lastName, double salary, String bankAccountNumber, String niNumber) {
+    @JsonCreator
+    public EmployeeRequest(@JsonProperty("firstName") String firstName,@JsonProperty("lastName") String lastName,
+                           @JsonProperty("salary") double salary,@JsonProperty("bankAccountNumber") String bankAccountNumber,
+                           @JsonProperty("niNumber") String niNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.salary = salary;
