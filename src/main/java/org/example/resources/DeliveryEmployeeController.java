@@ -2,6 +2,7 @@ package org.example.resources;
 
 import org.example.api.DeliveryEmployeeService;
 import org.example.cli.DeliveryEmployee;
+import org.example.cli.DeliveryEmployeeRequest;
 import org.example.client.DoesNotExistException;
 import org.example.client.FailedToCreateException;
 import org.example.client.FailedToGetException;
@@ -33,9 +34,9 @@ public class DeliveryEmployeeController {
     @POST
     @Path("/employee/delivery")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createDeliveryEmployee(DeliveryEmployee deliveryEmployee) {
+    public Response createDeliveryEmployee(DeliveryEmployeeRequest deliveryEmployeeRequest) {
         try {
-            return Response.ok(deliveryEmployeeService.createDeliveryEmployee(deliveryEmployee)).build();
+            return Response.ok(deliveryEmployeeService.createDeliveryEmployee(deliveryEmployeeRequest)).build();
         } catch (FailedToCreateException e) {
             System.err.println(e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
