@@ -80,22 +80,31 @@ public class DeliveryEmployeeDAO {
      * Gets a list of all delivery employee ids in the database
      * @return List of all delivery employees ids
      */
-    public List<Integer> getDeliveryEmployeesIds() {
+    public List<DeliveryEmployee> getDeliveryEmployees() {
         try {
             Connection conn = DatabaseConnector.getConnection();
-            String SQL = "SELECT employee_id, first_name, last_name, salary, bank_account_number, national_insurance_number FROM employee JOIN delivery_employee USING(employee_id)";
+            String SQL = "SELECT employee_id, first_name, last_name, salary, bank_account_number, " +
+                    "national_insurance_number FROM employee JOIN delivery_employee USING(employee_id)";
 
             Statement st = conn.createStatement();
 
             ResultSet rs = st.executeQuery(SQL);
 
-            List<Integer> employeeIds = new ArrayList<>();
+            List<DeliveryEmployee> deliveryEmployees = new ArrayList<>();
             while(rs.next()){
                 System.out.println(rs.getInt("employee_id"));
-                employeeIds.add(rs.getInt("employee_id"));
+                DeliveryEmployee deliveryEmployee = new DeliveryEmployee(
+                        rs.getInt("employee_id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getDouble("salary"),
+                        rs.getString("bank_account_number"),
+                        rs.getString("national_insurance_number"));
+
+                deliveryEmployees.add(deliveryEmployee);
             }
 
-            return employeeIds;
+            return deliveryEmployees;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

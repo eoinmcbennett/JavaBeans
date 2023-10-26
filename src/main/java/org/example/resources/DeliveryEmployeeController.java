@@ -27,7 +27,7 @@ public class DeliveryEmployeeController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllEmployees(){
         DeliveryEmployeeDAO employeeDAO = new DeliveryEmployeeDAO();
-        return Response.ok().entity(employeeDAO.getDeliveryEmployeesIds()).build();
+        return Response.ok().entity(employeeDAO.getDeliveryEmployees()).build();
     }
 
     // POST route to create a new delivery employee in DB
